@@ -3,16 +3,45 @@ version: '3'
 services:
   redis:
     image: redis
+    networks:
+      - my-network
+
 
   web:
     image: staleflippant/primeservice:web
     command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app-web
-    ports:
-      - "12345:8000"
+    # ports:
+    #   - "12345:8000"
     depends_on:
       - redis
+    networks:
+      - my-network
+
+  web-1:
+    image: staleflippant/primeservice:web
+    command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app-web
+    # ports:
+    #   - "12345:8000"
+    depends_on:
+      - redis
+    networks:
+      - my-network
+
+  web-2:
+    image: staleflippant/primeservice:web
+    command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app-web
+    # ports:
+    #   - "12345:8000"
+    depends_on:
+      - redis
+    networks:
+      - my-network
 
   master:
     build: .
@@ -23,3 +52,8 @@ services:
       - "8008:8000"
     depends_on:
       - web
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge

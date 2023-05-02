@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9
 
 # Set working directory
 WORKDIR /app
@@ -13,9 +13,6 @@ COPY . /app/
 
 # Expose the port on which the app will run
 EXPOSE 8008
-
-# Run migrations
-RUN python manage.py migrate
 
 # Start the server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
